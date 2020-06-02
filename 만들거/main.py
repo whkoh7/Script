@@ -5,11 +5,8 @@ import xml.etree.ElementTree as ET
 import urllib
 import http.client
 
-conn = http.client.HTTPConnection("kobis.or.kr")
-conn.request("GET","/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt=20200404")
-req = conn.getresponse()
-print(req.status,req.reason)
-print(req.read().decode('utf-8'))
+#print(req.status,req.reason)
+#print(req.read().decode('utf-8'))
 
 class mainGUI:
     def __init__(self):
@@ -39,7 +36,19 @@ class mainGUI:
         self.SearchTextBox.pack()
 
     def Search(self):
-        pass
+        self.conn = http.client.HTTPConnection("kobis.or.kr")
+        self.conn.request("GET",
+                     "/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt=20200404")
+        self.req = self.conn.getresponse()
+        self.xml_text = self.req.read().decode('utf-8')
+
+        self.root = ET.fromstring(self.xml_text)
+
+        print(self.root)
+
+
+
+
 
 
 mainGUI()
