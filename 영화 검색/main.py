@@ -69,8 +69,6 @@ class mainGUI:
             self.root = ET.fromstring(self.xml_text)
             self.Nroot = ET.fromstring(self.Nxml_text)
 
-            print(self.Nroot.find("channel").find("item").find('image').text)
-
             for child in self.root.find("dailyBoxOfficeList"):
                 if child.find('movieNm').text == self.SearchEntryBox.get():
                     self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
