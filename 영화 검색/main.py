@@ -32,19 +32,32 @@ class mainGUI:
         self.SearchEntryBox.pack()
         self.SearchButton = Button(self.window,overrelief = 'solid',text = "검색",command=self.Search)
         self.SearchButton.pack()
-        self.SearchTextBox = Entry(self.window, font=self.Boxfontstyle, text="")
-        self.SearchTextBox.pack()
+        self.Sranklabel = Label(self.window, font=self.Boxfontstyle, text="순위: ")
+        self.Sranklabel.pack()
+        self.SopenDtlabel = Label(self.window, font=self.Boxfontstyle, text="개봉일: ")
+        self.SopenDtlabel.pack()
+        self.SaudiAcclabel = Label(self.window, font=self.Boxfontstyle, text="누적관객수: ")
+        self.SaudiAcclabel.pack()
+        self.SsalesAcclabel = Label(self.window, font=self.Boxfontstyle, text="누적매출액: ")
+        self.SsalesAcclabel.pack()
 
     def Search(self):
         self.conn = http.client.HTTPConnection("kobis.or.kr")
         self.conn.request("GET",
                      "/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt=20200404")
         self.req = self.conn.getresponse()
+        self.xml_status = self.req.status
         self.xml_text = self.req.read().decode('utf-8')
 
         self.root = ET.fromstring(self.xml_text)
 
-        print(self.root)
+        for child in self.root.find("dailyBoxOfficeList"):
+            if child.find('movieNm').text == self.SearchEntryBox.get():
+                self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
+                self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
+                self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
+                self.SsalesAcclabel.configure(text= "누적매출액: "+child.find("salesAcc").text+"원")
+
 
 
 
