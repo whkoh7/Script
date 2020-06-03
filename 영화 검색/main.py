@@ -11,7 +11,7 @@ client_secret = "rFSWzcfijB"
 
 daily_movie_url = "http://www.kobis.or.kr//kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt="
 Naver_url = "https://openapi.naver.com/v1/search/movie.xml?query="
-Naver_url_option = "&display=10"
+Naver_url_option = "&display=20"
 
 
 class mainGUI:
@@ -32,7 +32,7 @@ class mainGUI:
         self.Toptext.pack()
 
     def InitSearchListBox(self):
-        self.MovieList = Canvas(self.window,width=200,height=300,bg="white",bd=2,relief="groove")
+        self.MovieList = Canvas(self.window,width=200,height=200,bg="white",bd=2,relief="groove")
         self.MovieList.place(x=495,y=80 )
 
     def InitSearchBox(self):
@@ -102,7 +102,7 @@ class mainGUI:
 
     def SearchMovieList(self): #입력한 날짜의 개봉한 박스오피스 출력
         self.MovieList.delete("all")
-        self.MovieListText = ""
+        self.MovieListText = self.SearchYearEntryBox.get()+"/"+self.SearchDateEntryBox.get()+" 박스오피스"+'\n\n'
         self.Movie_xml_request()
 
         if self.xml_status == 200:
@@ -110,7 +110,7 @@ class mainGUI:
             for child in self.root.find("dailyBoxOfficeList"):
                 self.MovieListText += child.find('movieNm').text+'\n'
 
-        self.MovieList.create_text(120,100,text=self.MovieListText)
+        self.MovieList.create_text(110,100,text=self.MovieListText)
 
 
     def SearchMovieInfo(self): #입력한 박스오피스 정보 출력, 날짜가 입력되어야함
@@ -119,12 +119,10 @@ class mainGUI:
         self.ClearLabel()
 
         openDt = '' #개봉연도 저장 변수, 제대로된 포스터 이미지 찾기위함
-        node=''
 
         if self.xml_status == 200:
             self.root = ET.fromstring(self.xml_text)
             self.Nroot = ET.fromstring(self.Nxml_text)
-
 
             for child in self.root.find("dailyBoxOfficeList"):
                 if child.find('movieNm').text == self.SearchMovieEntryBox.get():
@@ -136,7 +134,7 @@ class mainGUI:
 
             for child in self.Nroot.find('channel'):
                 if child.text == None:
-                    if child.find('pubDate').text == openDt[0:4]:
+                    if child.find('pubDate').text <= openDt[0:4]:
                         self.Sactorlabel.configure(text="출연 배우: "+child.find('actor').text.replace('|','\t\n'))
                         self.Sdirectorlabel.configure(text="감독: "+child.find('director').text.replace('|',''))
 
