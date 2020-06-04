@@ -6,10 +6,12 @@ import tkinter.messagebox
 import xml.etree.ElementTree as ET
 import urllib.request
 
+
 client_id = "tbnHeHUwtbVgWtr91vX5"
 client_secret = "rFSWzcfijB"
 
 daily_movie_url = "http://www.kobis.or.kr//kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt="
+weekly_movie_url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&weekGb=0&targetDt="
 Naver_url = "https://openapi.naver.com/v1/search/movie.xml?query="
 Naver_url_option = "&display=20"
 
@@ -26,17 +28,38 @@ class mainGUI:
         self.InitSearchlabel()
         self.window.mainloop()
 
+    def Movie_xml_request(self):  # 영화진흥위원회 api 호출
+        if self.RadioVariety.get() == 1:
+            self.request = urllib.request.Request(
+                daily_movie_url + self.SearchYearEntryBox.get() + self.SearchDateEntryBox.get())
+        else:
+            self.request = urllib.request.Request(
+                weekly_movie_url + self.SearchYearEntryBox.get() + self.SearchDateEntryBox.get())
+        self.response = urllib.request.urlopen(self.request)
+        self.xml_status = self.response.getcode()
+        self.response_text = self.response.read()
+        self.xml_text = self.response_text.decode('utf-8')
+
+    def Naver_xml_request(self, rank):  # 네이버영화 api 호출
+        self.Nrequest = urllib.request.Request(Naver_url + urllib.parse.quote(self.MovieList[rank]["text"]))
+        self.Nrequest.add_header("X-Naver-Client-Id", client_id)
+        self.Nrequest.add_header("X-Naver-Client-Secret", client_secret)
+
+        self.Nresponse = urllib.request.urlopen(self.Nrequest)
+        self.Nxml_status = self.Nresponse.getcode()
+        self.Nresponse_text = self.Nresponse.read()
+        self.Nxml_text = self.Nresponse_text.decode('utf-8')
+
+
     def InitTopText(self):
         self.Topfontstyle = font.Font(self.window, size=22, weight='bold', family='Consolas')
         self.Toptext = Label(self.window,font = self.Topfontstyle,text="박스오피스 정보 검색 APP")
         self.Toptext.pack()
 
     def InitSearchListBox(self):
-        #self.MovieList = Canvas(self.window,width=200,height=200,bg="white",bd=2,relief="groove")
-        #self.MovieList.place(x=495,y=80 )
         self.MovieList = []*10
         for i in range(10):
-            self.MovieList.append(Button(self.window, overrelief="solid", width=25, command = lambda a=i: self.SearchMovieInfo(a)))
+            self.MovieList.append(Button(self.window, overrelief="solid", width=25, bg='white',command = lambda a=i: self.SearchMovieInfo(a)))
             self.MovieList[i].place(x=500,y=80+i*28)
 
     def InitSearchBox(self):
@@ -52,6 +75,12 @@ class mainGUI:
 
         self.SearchMovieListButton = Button(self.window,overrelief = 'solid',text = "일/주간리스트 출력",command=self.SearchMovieList)
         self.SearchMovieListButton.place(x=560,y=50)
+
+        self.RadioVariety = tkinter.IntVar()
+        self.DailySelectionButton = Radiobutton(self.window, value=1,text="일간",variable=self.RadioVariety,command=self.ClearList)
+        self.DailySelectionButton.place(x=90,y=50)
+        self.WeeklySelectionButton = Radiobutton(self.window, value=2,text="주간", variable=self.RadioVariety,command=self.ClearList)
+        self.WeeklySelectionButton.place(x=150, y=50)
 
     def InitSearchlabel(self):
         self.Sranklabel = Label(self.window, font=self.Boxfontstyle, text="순위: ")
@@ -69,6 +98,11 @@ class mainGUI:
         self.Simage = Label(self.window,image = '')
         self.Simage.place(x=350,y=100)
 
+
+    def ClearList(self):
+        for i in range(10):
+            self.MovieList[i].configure(text='')
+
     def ClearLabel(self):
         self.Sranklabel.configure(text="순위: ")
         self.SopenDtlabel.configure(text="개봉일: ")
@@ -79,35 +113,20 @@ class mainGUI:
         self.Simage.configure(image='')
 
 
-    def Movie_xml_request(self): #영화진흥위원회 api 호출
-        self.request = urllib.request.Request(daily_movie_url+self.SearchYearEntryBox.get() + self.SearchDateEntryBox.get())
-        self.response = urllib.request.urlopen(self.request)
-        self.xml_status = self.response.getcode()
-        self.response_text = self.response.read()
-        self.xml_text = self.response_text.decode('utf-8')
-
-    def Naver_xml_request(self,rank): #네이버영화 api 호출
-        self.Nrequest = urllib.request.Request(Naver_url + urllib.parse.quote(self.MovieList[rank]["text"]))
-        self.Nrequest.add_header("X-Naver-Client-Id", client_id)
-        self.Nrequest.add_header("X-Naver-Client-Secret", client_secret)
-
-        self.Nresponse = urllib.request.urlopen(self.Nrequest)
-        self.Nxml_status = self.Nresponse.getcode()
-        self.Nresponse_text = self.Nresponse.read()
-        self.Nxml_text = self.Nresponse_text.decode('utf-8')
-
-
     def SearchMovieList(self): #입력한 날짜의 개봉한 박스오피스 출력
-        #self.MovieList.delete("all")
-        #self.MovieListText = self.SearchYearEntryBox.get()+"/"+self.SearchDateEntryBox.get()+" 박스오피스"+'\n\n'
         self.Movie_xml_request()
         count = 0
 
         if self.xml_status == 200:
             self.root = ET.fromstring(self.xml_text)
-            for child in self.root.find("dailyBoxOfficeList"):
-                self.MovieList[count].configure(text = child.find('movieNm').text)
-                count += 1
+            if self.RadioVariety.get() == 1:
+                for child in self.root.find("dailyBoxOfficeList"):
+                    self.MovieList[count].configure(text = child.find('movieNm').text)
+                    count += 1
+            else:
+                for child in self.root.find("weeklyBoxOfficeList"):
+                    self.MovieList[count].configure(text = child.find('movieNm').text)
+                    count += 1
 
         #self.MovieList.create_text(110,100,text=self.MovieListText)
 
@@ -123,14 +142,24 @@ class mainGUI:
             self.root = ET.fromstring(self.xml_text)
             self.Nroot = ET.fromstring(self.Nxml_text)
 
-            for child in self.root.find("dailyBoxOfficeList"):
-                if child.find('movieNm').text == self.MovieList[rank]["text"]:
-                    self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
-                    self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
-                    self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
-                    self.SsalesAcclabel.configure(text= "누적매출액: "+child.find("salesAcc").text+"원")
-                    openDt = child.find("openDt").text
-                    break
+            if self.RadioVariety.get() == 1:
+                for child in self.root.find("dailyBoxOfficeList"):
+                    if child.find('movieNm').text == self.MovieList[rank]["text"]:
+                        self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
+                        self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
+                        self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
+                        self.SsalesAcclabel.configure(text= "누적매출액: "+child.find("salesAcc").text+"원")
+                        openDt = child.find("openDt").text
+                        break
+            else:
+                for child in self.root.find("weeklyBoxOfficeList"):
+                    if child.find('movieNm').text == self.MovieList[rank]["text"]:
+                        self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
+                        self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
+                        self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
+                        self.SsalesAcclabel.configure(text= "누적매출액: "+child.find("salesAcc").text+"원")
+                        openDt = child.find("openDt").text
+                        break
 
             for child in self.Nroot.find('channel'):
                 if child.text == None:
@@ -149,6 +178,3 @@ class mainGUI:
 
 
 mainGUI()
-
-
-
