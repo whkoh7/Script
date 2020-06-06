@@ -24,6 +24,7 @@ class Set_xml:
         self.xml_text = self.response_text.decode('utf-8')
 
     def Naver_xml_request(self, name):  # 네이버영화 api 호출
+        self.Nrequest = ''
         self.Nrequest = urllib.request.Request(self.Naver_url + urllib.parse.quote(name))
         self.Nrequest.add_header("X-Naver-Client-Id", self.client_id)
         self.Nrequest.add_header("X-Naver-Client-Secret", self.client_secret)
