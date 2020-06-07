@@ -11,7 +11,7 @@ class Set_Parsing:
         self.daily_movie_url = "http://www.kobis.or.kr//kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&targetDt="
         self.weekly_movie_url = "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchWeeklyBoxOfficeList.xml?key=0f7d6638c03ecc9885350d92093d8f8b&weekGb=0&targetDt="
         self.Naver_url = "https://openapi.naver.com/v1/search/movie.xml?query="
-        self.Naver_url_option = "&display=20"
+        self.Naver_url_option = "&display=50"
 
     def Movie_xml_request(self, year, date, value):  # 영화진흥위원회 api 호출
         if value == 1:  # 일/주간 구분
@@ -27,7 +27,7 @@ class Set_Parsing:
 
     def Naver_xml_request(self, name):  # 네이버영화 api 호출
         self.Nrequest = ''
-        self.Nrequest = urllib.request.Request(self.Naver_url + urllib.parse.quote(name))
+        self.Nrequest = urllib.request.Request(self.Naver_url + urllib.parse.quote(name)+self.Naver_url_option)
         self.Nrequest.add_header("X-Naver-Client-Id", self.client_id)
         self.Nrequest.add_header("X-Naver-Client-Secret", self.client_secret)
 

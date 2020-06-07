@@ -82,13 +82,13 @@ class Page1():
         self.Simage.configure(image='')
 
     def SearchBoxofficeList(self):  # 입력한 날짜의 개봉한 박스오피스 출력
-        self.set_xml.Movie_xml_request(self.SearchYearEntryBox.get() \
+        self.set_Parsing.Movie_xml_request(self.SearchYearEntryBox.get() \
                                , self.SearchDateEntryBox.get() \
                                , self.RadioVariety.get())
         count = 0
 
-        if self.set_xml.xml_status == 200:
-            self.root = ET.fromstring(self.set_xml.xml_text)
+        if self.set_Parsing.xml_status == 200:
+            self.root = ET.fromstring(self.set_Parsing.xml_text)
             if self.RadioVariety.get() == 1:
                 for child in self.root.find("dailyBoxOfficeList"):
                     self.MovieList[count].configure(text=child.find('movieNm').text)
@@ -99,13 +99,13 @@ class Page1():
                     count += 1
 
     def SearchBoxofficeInfo(self, name):  # 입력한 박스오피스 정보 출력, 날짜가 입력되어야함
-        self.set_xml.Naver_xml_request(name)
+        self.set_Parsing.Naver_xml_request(name)
         self.ClearLabel()
 
         openDt = ''  # 개봉연도 저장 변수, 제대로된 포스터 이미지 찾기위함
 
-        if self.set_xml.xml_status == 200:
-            self.Nroot = ET.fromstring(self.set_xml.Nxml_text)
+        if self.set_Parsing.xml_status == 200:
+            self.Nroot = ET.fromstring(self.set_Parsing.Nxml_text)
 
             if self.RadioVariety.get() == 1:
                 for child in self.root.find("dailyBoxOfficeList"):
