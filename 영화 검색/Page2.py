@@ -1,10 +1,9 @@
 from tkinter import *
 from tkinter import font
-import tkinter.ttk
 from io import BytesIO
 from PIL import Image, ImageTk
-import tkinter.messagebox
-from Set_xml import *
+from Set_Parsing import *
+import webbrowser
 
 class Page2:
     def __init__(self,window):
@@ -12,7 +11,7 @@ class Page2:
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
         self.fontstyle2 = font.Font(self.window, size=9, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
-        self.set_xml = Set_xml()
+        self.set_Parsing = Set_Parsing()
 
     def InitTopText(self):
         self.Toptext = Label(self.window, font=self.Topfontstyle, text="영화 정보 검색")
@@ -38,29 +37,40 @@ class Page2:
         self.MovieimageLabel.place(x=800,y=50)
 
         self.MovieNameLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieNameLabel.place(x=800, y=375)
+        self.MovieNameLabel.place(x=800, y=300)
 
         self.MoviePubDateLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MoviePubDateLabel.place(x=800, y=400)
+        self.MoviePubDateLabel.place(x=800, y=325)
 
         self.MovieUserRatingLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieUserRatingLabel.place(x=800, y=425)
+        self.MovieUserRatingLabel.place(x=800, y=350)
 
         self.MovieDirectorLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieDirectorLabel.place(x=800, y=450)
+        self.MovieDirectorLabel.place(x=800, y=375)
 
         self.MovieActorLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieActorLabel.place(x=800, y=475)
+        self.MovieActorLabel.place(x=800, y=400)
+
+        self.MovieSummaryLabel = Label(self.window, font=self.fontstyle1, text="")
+        self.MovieSummaryLabel.place(x=800, y=480)
+
+        self.MovieLinkLabel = Label(self.window, font=self.fontstyle1, text="",width=15)
+        self.MovieLinkLabel.place(x=1000, y=300)
+
+        self.NextListButton = Button(self.window, font=self.fontstyle1, text="다음")
+        self.NextListButton.place(x=350, y=550)
+        self.PrevListButton = Button(self.window, font=self.fontstyle1, text="이전")
+        self.PrevListButton.place(x=300, y=550)
 
 
 
     def SearchMovieList(self):
-        self.set_xml.Naver_xml_request(self.SearchMovieEntryBox.get())
+        self.set_Parsing.Naver_xml_request(self.SearchMovieEntryBox.get())
         count = 0
         index_num = [0]*20
 
-        if self.set_xml.Nxml_status == 200:
-            self.Nroot = ET.fromstring(self.set_xml.Nxml_text)
+        if self.set_Parsing.Nxml_status == 200:
+            self.Nroot = ET.fromstring(self.set_Parsing.Nxml_text)
 
             for i in range(20):
                 try:
@@ -112,7 +122,11 @@ class Page2:
         self.MovieUserRatingLabel.configure(text='평점: ')
         self.MovieDirectorLabel.configure(text='감독: ')
         self.MovieActorLabel.configure(text='출연 배우: ')
-        actor_list = []
+        self.MovieSummaryLabel.configure(text='줄거리: ')
+        self.MovieLinkLabel.configure(text='',relief='flat')
+        movieLink = ''
+        MovieSummary=''
+
         for child in self.Nroot.find('channel'):
             if child.text == None:
                 if child.find('title').text == self.MovieName_text[n]\
@@ -122,7 +136,7 @@ class Page2:
                         with urllib.request.urlopen(image_url) as u:
                             raw_data = u.read()
                         image = Image.open(BytesIO(raw_data))
-                        image = image.resize((220, 314))
+                        image = image.resize((150, 230))
                         movie_image = ImageTk.PhotoImage(image)
                         self.MovieimageLabel.configure(image=movie_image)
                         self.MovieimageLabel.image = movie_image
@@ -139,6 +153,15 @@ class Page2:
                     self.MovieDirectorLabel.configure(text='감독: ' + child.find('director').text.replace('|',''))
                     self.MovieActorLabel.configure(text='출연 배우: ' + actor_list[0]+'\n'+'\t'\
                                                         +actor_list[1]+'\n'+'\t'+actor_list[2]+'\n'+'\t')
+                    self.MovieLinkLabel.configure(text='정보 보기',relief='ridge')
+                    movieLink = child.find('link').text
+                    MovieSummary = self.set_Parsing.Naver_HTML_request(movieLink)
+                    MovieSummary = MovieSummary[:20] + "\n" + MovieSummary[20:]
+                    MovieSummary = MovieSummary[:40] + "\n" + MovieSummary[40:]
+                    self.MovieSummaryLabel.configure(text='줄거리: '+MovieSummary)
+
+
+        self.MovieLinkLabel.bind('<Button-1>',lambda a:webbrowser.open(movieLink))
 
 
 

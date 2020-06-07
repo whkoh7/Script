@@ -1,7 +1,9 @@
 import xml.etree.ElementTree as ET
 import urllib.request
+from bs4 import BeautifulSoup
+import requests
 
-class Set_xml:
+class Set_Parsing:
     def __init__(self):
         self.client_id = "tbnHeHUwtbVgWtr91vX5"
         self.client_secret = "rFSWzcfijB"
@@ -33,3 +35,12 @@ class Set_xml:
         self.Nxml_status = self.Nresponse.getcode()
         self.Nresponse_text = self.Nresponse.read()
         self.Nxml_text = self.Nresponse_text.decode('utf-8')
+
+
+    def Naver_HTML_request(self,url): #오직 영화 줄거리 가져오기 위한 함수 와!!
+        req = urllib.request.Request(url)
+        res= urllib.request.urlopen(req)
+        Nhtml_text = res.read().decode('utf-8')
+        soup = BeautifulSoup(Nhtml_text,'html.parser')
+
+        return soup.head.find("meta",{"property":"og:description"}).get('content')
