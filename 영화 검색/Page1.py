@@ -13,6 +13,10 @@ class Page1():
         self.fontstyle2 = font.Font(self.window, size=11, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.set_Parsing = Set_Parsing()
+        self.set_Parsing_od = []*4
+        for i in range(4):
+            self.set_Parsing_od.append(Set_Parsing())
+
 
     def InitTopText(self):
         self.Toptext = Label(self.window, font=self.Topfontstyle, text="박스오피스 검색")
@@ -68,6 +72,11 @@ class Page1():
         self.Simage = Label(self.window, image='')
         self.Simage.place(x=620, y=130)
 
+    def InitsalesAccGraph(self):
+        self.salesAccGraph = Canvas(self.window,relief='sunken',bd=1,bg='white',width=250,height=200)
+        self.salesAccGraph.place(x=875,y=100)
+        self.salesAcc_od = ['0']*4
+
     def ClearList(self):
         for i in range(10):
             self.MovieList[i].configure(text='')
@@ -101,6 +110,7 @@ class Page1():
     def SearchBoxofficeInfo(self, name):  # 입력한 박스오피스 정보 출력, 날짜가 입력되어야함
         self.set_Parsing.Naver_xml_request(name)
         self.ClearLabel()
+        self.temp_name = name
 
         openDt = ''  # 개봉연도 저장 변수, 제대로된 포스터 이미지 찾기위함
 
@@ -139,8 +149,47 @@ class Page1():
                         self.Simage.image = movie_image
                         break
 
+
+    def Draw_Graph(self,name):
+        for i in range(4):
+            if i < 2:
+                if len(str(int(self.SearchDateEntryBox.get()))) == 3:
+                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                             , '0' + str(int(self.SearchDateEntryBox.get()) - (i + 1)) \
+                                                             , self.RadioVariety.get())
+                else:
+                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                             , str(int(self.SearchDateEntryBox.get()) - (i + 1)) \
+                                                             , self.RadioVariety.get())
+            else:
+                if len(str(int(self.SearchDateEntryBox.get()))) == 3:
+                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                             , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                             , self.RadioVariety.get())
+                else:
+                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                             , str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                             , self.RadioVariety.get())
+        self.root_od = []
+        for i in range(4):
+            if self.set_Parsing_od[i].xml_status == 200:
+                self.root_od.append(ET.fromstring(self.set_Parsing_od[i].xml_text))
+                if self.RadioVariety.get() == 1:
+                    for child in self.root_od[i].find("dailyBoxOfficeList"):
+                        if child.find('movieNm').text == name:
+                            self.salesAcc_od[i] = child.find('salesAcc').text
+                            break
+                else:
+                    for child in self.root_od[i].find("weeklyBoxOfficeList"):
+                        if child.find('movieNm').text == name:
+                            self.salesAcc_od[i] = child.find('salesAcc').text
+                            break
+        print(self.salesAcc_od)
+
+
     def Work_page(self):
         self.InitTopText()
         self.InitSearchListBox()
         self.InitSearchBox()
         self.InitSearchlabel()
+        self.InitsalesAccGraph()
