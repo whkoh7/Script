@@ -57,25 +57,29 @@ class Page1():
         self.WeeklySelectionButton.place(x=150, y=50)
 
     def InitSearchlabel(self):
-        self.Sranklabel = Label(self.window, font=self.fontstyle1, text="순위: ")
-        self.Sranklabel.place(x=380, y=100)
-        self.SopenDtlabel = Label(self.window, font=self.fontstyle1, text="개봉일: ")
-        self.SopenDtlabel.place(x=380, y=125)
-        self.SaudiAcclabel = Label(self.window, font=self.fontstyle1, text="누적관객수: ")
-        self.SaudiAcclabel.place(x=380, y=150)
-        self.SsalesAcclabel = Label(self.window, font=self.fontstyle1, text="누적매출액: ")
-        self.SsalesAcclabel.place(x=380, y=175)
+        self.Sranklabel = Label(self.window, font=self.fontstyle1, text="")
+        self.Sranklabel.place(x=380, y=425)
+        self.SopenDtlabel = Label(self.window, font=self.fontstyle1, text="")
+        self.SopenDtlabel.place(x=380, y=450)
+        self.SaudiAcclabel = Label(self.window, font=self.fontstyle1, text="")
+        self.SaudiAcclabel.place(x=380, y=475)
+        self.SsalesAcclabel = Label(self.window, font=self.fontstyle1, text="")
+        self.SsalesAcclabel.place(x=380, y=500)
         # self.Sactorlabel = Label(self.P1, font=self.Boxfontstyle, text="출연 배우: ")
         # self.Sactorlabel.place(x=300, y=175)
         # self.Sdirectorlabel = Label(self.P1, font=self.Boxfontstyle, text="감독: ")
         # self.Sdirectorlabel.place(x=300, y=300)
         self.Simage = Label(self.window, image='')
-        self.Simage.place(x=620, y=130)
+        self.Simage.place(x=380, y=100)
 
     def InitsalesAccGraph(self):
-        self.salesAccGraph = Canvas(self.window,relief='sunken',bd=1,bg='white',width=250,height=200)
-        self.salesAccGraph.place(x=875,y=100)
-        self.salesAcc_od = ['0']*4
+        self.salesAccGraph = Canvas(self.window,relief='sunken',bd=1,bg='white',width=300,height=250)
+        self.salesAccGraph.place(x=825,y=100)
+        self.salesChange_od = ['0']*4
+        self.salesAccGraphlabel = []*5
+        for i in range(5):
+            self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
+            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=340)
 
     def ClearList(self):
         for i in range(10):
@@ -125,7 +129,7 @@ class Page1():
                         self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
                         self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
                         openDt = child.find("openDt").text
-                        self.CurrentsalesAcc = child.find("salesAcc").text
+                        self.CurrentsalesChange = child.find("salesChange").text
                         break
             else:
                 for child in self.root.find("weeklyBoxOfficeList"):
@@ -149,43 +153,68 @@ class Page1():
                         self.Simage.configure(image=movie_image)
                         self.Simage.image = movie_image
                         break
+            self.Draw_Graph(name)
 
 
     def Draw_Graph(self,name):
+        self.salesAccGraph.delete('all')
         for i in range(4):
             if i < 2:
                 if len(str(int(self.SearchDateEntryBox.get()))) == 3:
-                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , '0' + str(int(self.SearchDateEntryBox.get()) - (i + 1)) \
+                    if self.RadioVariety.get() == 1:
+                        self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                             , '0' + str(int(self.SearchDateEntryBox.get()) - i - 2) \
                                                              , self.RadioVariety.get())
                 else:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , str(int(self.SearchDateEntryBox.get()) - (i + 1)) \
+                                                             , str(int(self.SearchDateEntryBox.get()) - i - 2) \
                                                              , self.RadioVariety.get())
             else:
                 if len(str(int(self.SearchDateEntryBox.get()))) == 3:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                             , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
                                                              , self.RadioVariety.get())
                 else:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                             , str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
                                                              , self.RadioVariety.get())
         self.root_od = []
+
         for i in range(4):
             if self.set_Parsing_od[i].xml_status == 200:
                 self.root_od.append(ET.fromstring(self.set_Parsing_od[i].xml_text))
                 if self.RadioVariety.get() == 1:
                     for child in self.root_od[i].find("dailyBoxOfficeList"):
                         if child.find('movieNm').text == name:
-                            self.salesAcc_od[i] = child.find('salesAcc').text
+                            self.salesChange_od[i] = child.find('salesChange').text
                             break
                 else:
                     for child in self.root_od[i].find("weeklyBoxOfficeList"):
                         if child.find('movieNm').text == name:
-                            self.salesAcc_od[i] = child.find('salesAcc').text
+                            self.salesChange_od[i] = child.find('salesChange').text
+            else:
+                self.salesChange_od[i] = '0'
+            if i < 2:
+                self.salesAccGraph.create_arc(10 + (70*i) - 10, 125-float(self.salesChange_od[i]) - 10, \
+                                          10 + (70*i)+ 10, 125-float(self.salesChange_od[i]) + 10)
+            else:
+                self.salesAccGraph.create_arc(10 + (70 * (i+1)) - 10, 125 - float(self.salesChange_od[i]) - 10, \
+                                              10 + (70 * (i+1)) + 10, 125 - float(self.salesChange_od[i]) + 10)
 
-                self.salesAccGraph.create_line(25+150*i,0,25+150*i,(self.salesAcc_od[i]/self.CurrentsalesAcc)*150)
+        self.salesAccGraph.create_arc(10+140-10,125-10,10+140+10,125+10)
+        self.salesAccGraph.create_line(10,125-float(self.salesChange_od[0])\
+                                       ,10+70,125-float(self.salesChange_od[1])\
+                                       ,10+140,125\
+                                       ,10+210,125-float(self.salesChange_od[2])\
+                                       ,10+280,125-float(self.salesChange_od[3]),width=2,fill='blue')
+        for i in range(5):
+            if i < 2:
+                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get()) - i - 2))
+            elif i > 2:
+                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get()) + (i - 2)))
+            else:
+                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get())))
+
 
 
 
