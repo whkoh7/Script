@@ -73,6 +73,7 @@ class Page1():
         self.Simage.place(x=380, y=100)
 
     def InitsalesAccGraph(self):
+        self.temp_name = ''
         self.salesAccGraph = Canvas(self.window,relief='sunken',bd=1,bg='white',width=300,height=250)
         self.salesAccGraph.place(x=825,y=100)
         self.salesChange_od = ['0']*4
@@ -80,6 +81,11 @@ class Page1():
         for i in range(5):
             self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
             self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=340)
+        self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
+        self.salesAccGraphlabel[5].place(x=725 , y=215)
+        self.Draw_Graph_Button=Button(self.window,font=self.fontstyle1, text="최근 매출액 비교 그래프 출력",command=lambda n=self.temp_name:self.Draw_Graph(self.temp_name))
+        self.Draw_Graph_Button.place(x = 860, y = 375)
+        self.Draw_Graph_Button['state'] = 'disabled'
 
     def ClearList(self):
         for i in range(10):
@@ -110,6 +116,7 @@ class Page1():
                 for child in self.root.find("weeklyBoxOfficeList"):
                     self.MovieList[count].configure(text=child.find('movieNm').text)
                     count += 1
+        self.Draw_Graph_Button['state'] = 'disabled'
 
     def SearchBoxofficeInfo(self, name):  # 입력한 박스오피스 정보 출력, 날짜가 입력되어야함
         self.set_Parsing.Naver_xml_request(name)
@@ -129,7 +136,7 @@ class Page1():
                         self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
                         self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
                         openDt = child.find("openDt").text
-                        self.CurrentsalesChange = child.find("salesChange").text
+                        self.CurrentsalesAcc = child.find("salesAcc").text
                         break
             else:
                 for child in self.root.find("weeklyBoxOfficeList"):
@@ -139,6 +146,7 @@ class Page1():
                         self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
                         self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
                         openDt = child.find("openDt").text
+                        self.CurrentsalesAcc = child.find("salesAcc").text
                         break
 
             for child in self.Nroot.find('channel'):
@@ -153,31 +161,30 @@ class Page1():
                         self.Simage.configure(image=movie_image)
                         self.Simage.image = movie_image
                         break
-            self.Draw_Graph(name)
-
+            self.Draw_Graph_Button['state'] = 'active'
 
     def Draw_Graph(self,name):
         self.salesAccGraph.delete('all')
         for i in range(4):
             if i < 2:
                 if len(str(int(self.SearchDateEntryBox.get()))) == 3:
-                    if self.RadioVariety.get() == 1:
-                        self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , '0' + str(int(self.SearchDateEntryBox.get()) - i - 2) \
-                                                             , self.RadioVariety.get())
+                    self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
+                                                                 , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
+                                                                 , self.RadioVariety.get())
                 else:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , str(int(self.SearchDateEntryBox.get()) - i - 2) \
-                                                             , self.RadioVariety.get())
+                                                                 , str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
+                                                                 , self.RadioVariety.get())
             else:
                 if len(str(int(self.SearchDateEntryBox.get()))) == 3:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
-                                                             , self.RadioVariety.get())
+                                                                 , '0' + str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                                 , self.RadioVariety.get())
                 else:
                     self.set_Parsing_od[i].Movie_xml_request(self.SearchYearEntryBox.get() \
-                                                             , str(int(self.SearchDateEntryBox.get()) + (i - 2)) \
-                                                             , self.RadioVariety.get())
+                                                                 , str(int(self.SearchDateEntryBox.get()) + (i - 1)) \
+                                                                 , self.RadioVariety.get())
+
         self.root_od = []
 
         for i in range(4):
@@ -192,33 +199,39 @@ class Page1():
                     for child in self.root_od[i].find("weeklyBoxOfficeList"):
                         if child.find('movieNm').text == name:
                             self.salesChange_od[i] = child.find('salesChange').text
+                            break
             else:
                 self.salesChange_od[i] = '0'
             if i < 2:
-                self.salesAccGraph.create_arc(10 + (70*i) - 10, 125-float(self.salesChange_od[i]) - 10, \
-                                          10 + (70*i)+ 10, 125-float(self.salesChange_od[i]) + 10)
+                self.salesAccGraph.create_oval(10 + (70*i) - 5, 125-(float(self.salesChange_od[i])*1.2) - 5, \
+                                            10 + (70*i)+ 5, 125-(float(self.salesChange_od[i])*1.2) + 5,fill='blue',outline = 'blue')
             else:
-                self.salesAccGraph.create_arc(10 + (70 * (i+1)) - 10, 125 - float(self.salesChange_od[i]) - 10, \
-                                              10 + (70 * (i+1)) + 10, 125 - float(self.salesChange_od[i]) + 10)
+                self.salesAccGraph.create_oval(10 + (70 * (i+1)) - 5, 125 - (float(self.salesChange_od[i])*1.2) - 5, \
+                                              10 + (70 * (i + 1)) + 5, 125 - (float(self.salesChange_od[i]) * 1.2) + 5,fill='blue',outline = 'blue')
 
-        self.salesAccGraph.create_arc(10+140-10,125-10,10+140+10,125+10)
-        self.salesAccGraph.create_line(10,125-float(self.salesChange_od[0])\
-                                       ,10+70,125-float(self.salesChange_od[1])\
+        self.salesAccGraph.create_oval(10+140-5,125-5 ,10+140+5,125+5,fill='blue',outline = 'blue')
+        self.salesAccGraph.create_line(10,125-float(self.salesChange_od[0])*1.2\
+                                       ,10+70,125-float(self.salesChange_od[1])*1.2\
                                        ,10+140,125\
-                                       ,10+210,125-float(self.salesChange_od[2])\
-                                       ,10+280,125-float(self.salesChange_od[3]),width=2,fill='blue')
+                                        ,10+210,125-float(self.salesChange_od[2])*1.2\
+                                       ,10+280,125-float(self.salesChange_od[3])*1.2,width=2,fill='blue')
+        for i in range(30):
+            self.salesAccGraph.create_line(0+(i*10),125,5+(i*10),125)
         for i in range(5):
-            if i < 2:
-                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get()) - i - 2))
-            elif i > 2:
-                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get()) + (i - 2)))
+            if self.RadioVariety.get() == 1:
+                if i < 2:
+                    self.salesAccGraphlabel[i].configure(text=str(2-i)+"일전")
+                elif i > 2:
+                    self.salesAccGraphlabel[i].configure(text=str(i - 2)+"일후")
+                else:
+                    self.salesAccGraphlabel[i].configure(text='기준일')
             else:
-                self.salesAccGraphlabel[i].configure(text=str(int(self.SearchDateEntryBox.get())))
-
-
-
-
-
+                if i < 2:
+                    self.salesAccGraphlabel[i].configure(text=str(2 - i) + "주전")
+                elif i > 2:
+                    self.salesAccGraphlabel[i].configure(text=str(i - 2) + "주후")
+                else:
+                    self.salesAccGraphlabel[i].configure(text='기준일')
 
 
     def Work_page(self):
