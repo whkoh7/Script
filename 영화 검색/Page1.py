@@ -125,6 +125,7 @@ class Page1():
                         self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
                         self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
                         openDt = child.find("openDt").text
+                        self.CurrentsalesAcc = child.find("salesAcc").text
                         break
             else:
                 for child in self.root.find("weeklyBoxOfficeList"):
@@ -183,8 +184,12 @@ class Page1():
                     for child in self.root_od[i].find("weeklyBoxOfficeList"):
                         if child.find('movieNm').text == name:
                             self.salesAcc_od[i] = child.find('salesAcc').text
-                            break
-        print(self.salesAcc_od)
+
+                self.salesAccGraph.create_line(25+150*i,0,25+150*i,(self.salesAcc_od[i]/self.CurrentsalesAcc)*150)
+
+
+
+
 
 
     def Work_page(self):
