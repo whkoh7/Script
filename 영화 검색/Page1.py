@@ -130,7 +130,7 @@ class Page1():
 
             if self.RadioVariety.get() == 1:
                 for child in self.root.find("dailyBoxOfficeList"):
-                    if child.find('movieNm').text == name:
+                    if child.find("movieNm").text == name:
                         self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
                         self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
                         self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")

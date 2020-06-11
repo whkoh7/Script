@@ -1,5 +1,6 @@
 from Page1 import *
 from Page2 import *
+from Page3 import *
 
 class mainGUI:
     def __init__(self):
@@ -16,8 +17,13 @@ class mainGUI:
         self.notebook.add(self.P2, text="영화검색")
         self.page2 = Page2(self.P2)
 
+        self.P3 = Frame(self.window)
+        self.notebook.add(self.P3, text="배우검색")
+        self.page3 = Page3(self.P3)
+
         self.page1.Work_page()
         self.page2.Work_page()
+        self.page3.Work_page()
 
         self.window.mainloop()
 
