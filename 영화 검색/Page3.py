@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image, ImageTk
 import tkinter.messagebox
 from Set_Parsing import *
+import webbrowser
 
 class Page3():
     def __init__(self,window):
@@ -33,12 +34,18 @@ class Page3():
         for i in range(6):
             self.ActorinfoLabel.append(Label(self.window, font=self.fontstyle1, text=""))
             self.ActorinfoLabel[i].place(x=100,y=325+(i*25))
+        self.Label1 = Label(self.window, font=self.Topfontstyle, text="")
+        self.Label1.place(x=700,y=100)
 
 
     def SearchActor(self):
         self.set_Parsing.actorInfo_HTML_request(self.SearchEntryBox.get())
+        self.set_Parsing.actor_xml_request(self.SearchEntryBox.get())
+        movie_list = []
+        del movie_list[:]
+
         self.ActorinfoLabel[0].configure(text = self.set_Parsing.actor_info[0])
-        for i in range(1,6):
+        for i in range(1,5):
             self.ActorinfoLabel[i].configure(text=self.set_Parsing.actor_info_tag[i-1]\
                                                  +": "+self.set_Parsing.actor_info[i])
 
@@ -52,6 +59,36 @@ class Page3():
             self.ActorimageLabel.image = _image
         else:
             self.ActorimageLabel.configure(text="이미지 없음")
+
+        self.actor_movie_image = []
+        self.actor_movie_name = []
+        for i in range(len(self.actor_movie_image)):
+            self.actor_movie_image[i].destroy()
+            self.actor_movie_name[i].destroy()
+        del self.actor_movie_image[:]
+        del self.actor_movie_name[:]
+        for i in range(len(self.set_Parsing.movie_img_list)):
+            if self.set_Parsing.actor_image_url != None:
+                with urllib.request.urlopen(self.set_Parsing.movie_img_list[i]) as u:
+                    raw_data = u.read()
+                image = Image.open(BytesIO(raw_data))
+                image = image.resize((100, 150))
+                _image = ImageTk.PhotoImage(image)
+                self.actor_movie_image.append(Label(self.window, image=_image))
+                self.actor_movie_image[i].image = _image
+            else:
+                self.actor_movie_image.append(Label(self.window, text="이미지 없음"))
+            self.actor_movie_name.append(Label(self.window, font=self.fontstyle2,text=self.set_Parsing.movie_name_list[i]))
+            self.actor_movie_image[i].place(x=700+i*150,y=150)
+            self.actor_movie_name[i].place(x=700 + i * 150, y=310)
+        self.Label1.configure(text='출연작')
+
+        self.Actor_naver_url = Button(self.window, font=self.fontstyle1, text="네이버에서 검색"\
+                                      ,command=lambda a=self.set_Parsing.actorInfo_url:webbrowser.open(a))
+        self.Actor_naver_url.place(x=300, y=150)
+
+
+
 
 
 
