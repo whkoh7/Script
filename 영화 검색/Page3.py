@@ -7,13 +7,14 @@ import tkinter.messagebox
 from Set_Parsing import *
 import webbrowser
 
-class Page3():
+class page3():
     def __init__(self,window):
         self.window = window
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
         self.fontstyle2 = font.Font(self.window, size=9, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.set_Parsing = Set_Parsing()
+        self.textbox = Text(self.window, font=self.fontstyle1, width=40, height=10)
 
     def InitTopText(self):
         self.Toptext = Label(self.window, font=self.Topfontstyle, text="배우 정보 검색")
@@ -30,10 +31,7 @@ class Page3():
     def InitSearchlabel(self):
         self.ActorimageLabel = Label(self.window, font=self.fontstyle1, text="", image='')
         self.ActorimageLabel.place(x=100, y=150)
-        self.ActorinfoLabel = [] *6
-        for i in range(6):
-            self.ActorinfoLabel.append(Label(self.window, font=self.fontstyle1, text=""))
-            self.ActorinfoLabel[i].place(x=100,y=325+(i*25))
+        self.textbox.place(x=100,y=325)
         self.Label1 = Label(self.window, font=self.Topfontstyle, text="")
         self.Label1.place(x=700,y=100)
 
@@ -44,11 +42,10 @@ class Page3():
         movie_list = []
         del movie_list[:]
 
-        self.ActorinfoLabel[0].configure(text = self.set_Parsing.actor_info[0])
+        self.textbox.insert(CURRENT,self.set_Parsing.actor_info[0]+'\n\n')
         for i in range(1,5):
-            self.ActorinfoLabel[i].configure(text=self.set_Parsing.actor_info_tag[i-1]\
-                                                 +": "+self.set_Parsing.actor_info[i])
-
+            self.textbox.insert(CURRENT,self.set_Parsing.actor_info_tag[i-1]\
+                                                 +": "+self.set_Parsing.actor_info[i]+'\n')
 
         if self.set_Parsing.actor_image_url != None:
             with urllib.request.urlopen(self.set_Parsing.actor_image_url) as u:
@@ -60,6 +57,7 @@ class Page3():
         else:
             self.ActorimageLabel.configure(text="이미지 없음")
 
+        #출연 영화 목록
         self.actor_movie_image = []
         self.actor_movie_name = []
         for i in range(len(self.actor_movie_image)):
@@ -86,8 +84,6 @@ class Page3():
         self.Actor_naver_url = Button(self.window, font=self.fontstyle1, text="네이버에서 검색"\
                                       ,command=lambda a=self.set_Parsing.actorInfo_url:webbrowser.open(a))
         self.Actor_naver_url.place(x=300, y=150)
-
-
 
 
 

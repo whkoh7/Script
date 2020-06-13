@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 from Set_Parsing import *
 import webbrowser
 
-class Page2:
+class page2:
     def __init__(self,window):
         self.window = window
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
@@ -13,6 +13,7 @@ class Page2:
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.movieListPage = 0
         self.set_Parsing = Set_Parsing()
+        self.textbox = Text(self.window, width=35, height=10, font=self.fontstyle1)
 
     def InitTopText(self):
         self.Toptext = Label(self.window, font=self.Topfontstyle, text="영화 정보 검색")
@@ -32,23 +33,7 @@ class Page2:
         self.MovieimageLabel = Label(self.window, image='')
         self.MovieimageLabel.place(x=800,y=50)
 
-        self.MovieNameLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieNameLabel.place(x=800, y=300)
-
-        self.MoviePubDateLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MoviePubDateLabel.place(x=800, y=325)
-
-        self.MovieUserRatingLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieUserRatingLabel.place(x=800, y=350)
-
-        self.MovieDirectorLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieDirectorLabel.place(x=800, y=375)
-
-        self.MovieActorLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieActorLabel.place(x=800, y=400)
-
-        self.MovieSummaryLabel = Label(self.window, font=self.fontstyle1, text="")
-        self.MovieSummaryLabel.place(x=800, y=480)
+        self.textbox.place(x=800, y=325)
 
         self.MovieLinkLabel = Label(self.window, font=self.fontstyle1, text="",width=15)
         self.MovieLinkLabel.place(x=1000, y=100)
@@ -166,14 +151,9 @@ class Page2:
 
     def SearchMovieInfo(self,n):
         self.MovieimageLabel.configure(image='')
-        self.MovieNameLabel.configure(text='')
-        self.MoviePubDateLabel.configure(text='')
-        self.MovieUserRatingLabel.configure(text='')
-        self.MovieDirectorLabel.configure(text='')
-        self.MovieActorLabel.configure(text='')
-        self.MovieSummaryLabel.configure(text='')
         self.MovieLinkLabel.configure(text='',relief='flat')
         movieLink = ''
+        self.textbox.delete("1.0", "end")
         MovieSummary=''
 
         for child in self.Nroot.find('channel'):
@@ -190,27 +170,28 @@ class Page2:
                         self.MovieimageLabel.configure(image=movie_image)
                         self.MovieimageLabel.image = movie_image
                     temp1 = child.find('actor').text
+                    temp2 = child.find('title').text.replace('<b>', '')
+                    temp2 = temp2.replace('</b>', '')
+                    temp2 = temp2.replace('&amp;', '')
+                    self.textbox.insert(CURRENT,temp2+'\n\n')
+                    self.textbox.insert(CURRENT,'제작 연도: ' + child.find('pubDate').text+'\n')
+                    self.textbox.insert(CURRENT,'평점: ' + child.find('userRating').text+'\n')
+                    self.textbox.insert(CURRENT,'감독: ' + child.find('director').text.replace('|', ' ')+'\n')
                     try:
                         actor_list = temp1.split('|')
                         actor_list.append(' ')
                         actor_list.append(' ')
-                        self.MovieActorLabel.configure(text='출연 배우: ' + actor_list[0] + '\n' + '\t' \
-                                                            + actor_list[1] + '\n' + '\t' + actor_list[2] + '\n' + '\t')
+                        self.textbox.insert(CURRENT,'출연 배우: ' + actor_list[0] + ', ' \
+                                                            + actor_list[1] + ', ' + actor_list[2] + '\n')
                     except AttributeError:
                         pass
-                    temp2 = child.find('title').text.replace('<b>', '')
-                    temp2 = temp2.replace('</b>', '')
-                    temp2 = temp2.replace('&amp;', '')
-                    self.MovieNameLabel.configure(text=temp2)
-                    self.MoviePubDateLabel.configure(text='제작 연도: '+child.find('pubDate').text)
-                    self.MovieUserRatingLabel.configure(text='평점: ' + child.find('userRating').text)
-                    self.MovieDirectorLabel.configure(text='감독: ' + child.find('director').text.replace('|',''))
                     self.MovieLinkLabel.configure(text='네이버에서'+'\n'+'정보 보기',relief='ridge')
                     movieLink = child.find('link').text
                     MovieSummary = self.set_Parsing.Naver_HTML_request(movieLink)
-                    MovieSummary = MovieSummary[:20] + "\n" + MovieSummary[20:]
-                    MovieSummary = MovieSummary[:40] + "\n" + MovieSummary[40:]
-                    self.MovieSummaryLabel.configure(text='줄거리: '+MovieSummary)
+                    if MovieSummary != "네이버 영화 : 영화정보":
+                        self.textbox.insert(CURRENT,'\n'+'줄거리: '+MovieSummary)
+                    else:
+                        pass
 
 
         self.MovieLinkLabel.bind('<Button-1>',lambda a:webbrowser.open(movieLink))

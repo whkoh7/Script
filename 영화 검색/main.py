@@ -1,30 +1,48 @@
-from Page1 import *
-from Page2 import *
-from Page3 import *
+from tkinter import *
+from tkinter import font
+import tkinter.ttk
+import Page1
+import Page2
+import Page3
+import Page4
 
-class mainGUI:
-    def __init__(self):
-        self.window = Tk()
-        self.window.title("박스오피스 정보 검색")
-        self.notebook = tkinter.ttk.Notebook(self.window, width=1200, height=600)
-        self.notebook.pack()
+window = Tk()
+window.title("박스오피스 정보 검색")
+notebook = tkinter.ttk.Notebook(window, width=1200, height=600)
+notebook.pack()
 
-        self.P1 = Frame(self.window)
-        self.notebook.add(self.P1, text="박스오피스")
-        self.page1 = Page1(self.P1)
+P1 = Frame(window)
+notebook.add(P1, text="박스오피스")
+_page1 = Page1.page1(P1)
 
-        self.P2 = Frame(self.window)
-        self.notebook.add(self.P2, text="영화검색")
-        self.page2 = Page2(self.P2)
+P2 = Frame(window)
+notebook.add(P2, text="영화검색")
+_page2 = Page2.page2(P2)
 
-        self.P3 = Frame(self.window)
-        self.notebook.add(self.P3, text="배우검색")
-        self.page3 = Page3(self.P3)
+P3 = Frame(window)
+notebook.add(P3, text="배우검색")
+_page3 = Page3.page3(P3)
 
-        self.page1.Work_page()
-        self.page2.Work_page()
-        self.page3.Work_page()
+P4 = Frame(window)
+notebook.add(P4, text="메일")
+_page4 = Page4.page4(P4)
 
-        self.window.mainloop()
+# 메일로 보낼 내용 page4에 보내는 벤자민 버튼
+gettext_button1 = Button(P1,text='저장',command=lambda n=_page1.textbox.get("1.0","end"):\
+                     _page4.textbox.insert(CURRENT,"---------------------------------\n"\
+                                           +_page1.SearchYearEntryBox.get()+_page1.SearchDateEntryBox.get()+"\n"\
+                                           +_page1.textbox.get("1.0","end")))
+gettext_button1.place(x=380,y=575)
+gettext_button2 = Button(P2,text='저장',command=lambda n=_page2.textbox.get("1.0","end"):\
+                     _page4.textbox.insert(CURRENT,"---------------------------------\n"+_page2.textbox.get("1.0","end")))
+gettext_button2.place(x=800,y=525)
+gettext_button3 = Button(P3,text='저장',command=lambda n=_page3.textbox.get("1.0","end"):\
+                     _page4.textbox.insert(CURRENT,"---------------------------------\n"+_page3.textbox.get("1.0","end")))
+gettext_button3.place(x=100,y=525)
 
-mainGUI()
+_page1.Work_page()
+_page2.Work_page()
+_page3.Work_page()
+_page4.Work_page()
+
+window.mainloop()

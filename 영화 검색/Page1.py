@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 import tkinter.messagebox
 from Set_Parsing import *
 
-class Page1():
+class page1():
     def __init__(self,window):
         self.window = window
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
@@ -16,7 +16,9 @@ class Page1():
         self.set_Parsing_od = []*4
         for i in range(4):
             self.set_Parsing_od.append(Set_Parsing())
-
+        self.textbox = Text(self.window, width=40, height=8, font=self.fontstyle1)
+        self.SearchYearEntryBox = Entry(self.window, font=self.fontstyle1, width=6)
+        self.SearchDateEntryBox = Entry(self.window, font=self.fontstyle1, width=6)
 
     def InitTopText(self):
         self.Toptext = Label(self.window, font=self.Topfontstyle, text="박스오피스 검색")
@@ -29,19 +31,17 @@ class Page1():
             self.MovieList.append(
                 Button(self.window, font=self.fontstyle2, overrelief="solid", width=28, height=1, bg='white',
                        command=lambda a=i: self.SearchBoxofficeInfo(self.MovieList[a]['text'])))
-            self.MovieList[i].place(x=100, y=80 + i * 45)
+            self.MovieList[i].place(x=100, y=120 + i * 45)
             self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + "."))
-            self.Rank_Label[i].place(x=60, y=85 + i * 45)
+            self.Rank_Label[i].place(x=60, y=125 + i * 45)
 
     def InitSearchBox(self):
         self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도: ")
-        self.SearchYearEntryBoxlabel.place(x=310, y=50)
-        self.SearchYearEntryBox = Entry(self.window, font=self.fontstyle1, width=6)
+        self.SearchYearEntryBoxlabel.place(x=305, y=50)
         self.SearchYearEntryBox.place(x=360, y=50)
 
         self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일: ")
-        self.SearchDateEntryBoxlabel.place(x=430, y=50)
-        self.SearchDateEntryBox = Entry(self.window, font=self.fontstyle1, width=6)
+        self.SearchDateEntryBoxlabel.place(x=425, y=50)
         self.SearchDateEntryBox.place(x=490, y=50)
 
         self.SearchMovieListButton = Button(self.window, overrelief='solid', text="일/주간박스오피스 출력",
@@ -57,20 +57,10 @@ class Page1():
         self.WeeklySelectionButton.place(x=150, y=50)
 
     def InitSearchlabel(self):
-        self.Sranklabel = Label(self.window, font=self.fontstyle1, text="")
-        self.Sranklabel.place(x=380, y=425)
-        self.SopenDtlabel = Label(self.window, font=self.fontstyle1, text="")
-        self.SopenDtlabel.place(x=380, y=450)
-        self.SaudiAcclabel = Label(self.window, font=self.fontstyle1, text="")
-        self.SaudiAcclabel.place(x=380, y=475)
-        self.SsalesAcclabel = Label(self.window, font=self.fontstyle1, text="")
-        self.SsalesAcclabel.place(x=380, y=500)
-        # self.Sactorlabel = Label(self.P1, font=self.Boxfontstyle, text="출연 배우: ")
-        # self.Sactorlabel.place(x=300, y=175)
-        # self.Sdirectorlabel = Label(self.P1, font=self.Boxfontstyle, text="감독: ")
-        # self.Sdirectorlabel.place(x=300, y=300)
         self.Simage = Label(self.window, image='')
         self.Simage.place(x=380, y=100)
+
+        self.textbox.place(x=380,y=425)
 
     def InitsalesAccGraph(self):
         self.temp_name = ''
@@ -92,12 +82,6 @@ class Page1():
             self.MovieList[i].configure(text='')
 
     def ClearLabel(self):
-        self.Sranklabel.configure(text="순위: ")
-        self.SopenDtlabel.configure(text="개봉일: ")
-        self.SaudiAcclabel.configure(text="누적관객수: ")
-        self.SsalesAcclabel.configure(text="누적매출액: ")
-        # self.Sactorlabel.configure(text="출연 배우: ")
-        # self.Sdirectorlabel.configure(text="감독: ")
         self.Simage.configure(image='')
 
     def SearchBoxofficeList(self):  # 입력한 날짜의 개봉한 박스오피스 출력
@@ -120,6 +104,7 @@ class Page1():
 
     def SearchBoxofficeInfo(self, name):  # 입력한 박스오피스 정보 출력, 날짜가 입력되어야함
         self.set_Parsing.Naver_xml_request(name)
+        self.textbox.delete("1.0", "end")
         self.ClearLabel()
         self.temp_name = name
 
@@ -131,20 +116,22 @@ class Page1():
             if self.RadioVariety.get() == 1:
                 for child in self.root.find("dailyBoxOfficeList"):
                     if child.find("movieNm").text == name:
-                        self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
-                        self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
-                        self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
-                        self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
                         openDt = child.find("openDt").text
                         self.CurrentsalesAcc = child.find("salesAcc").text
+                        self.textbox.insert(CURRENT,"제목: "+child.find("movieNm").text+"\n")
+                        self.textbox.insert(CURRENT, "순위: " + child.find("rank").text + "위\n")
+                        self.textbox.insert(CURRENT, "개봉일: " + child.find("openDt").text + "\n")
+                        self.textbox.insert(CURRENT, "누적관객수: " + child.find("audiAcc").text + "명\n")
+                        self.textbox.insert(CURRENT, "누적매출액: " + child.find("salesAcc").text + "원\n")
                         break
             else:
                 for child in self.root.find("weeklyBoxOfficeList"):
                     if child.find('movieNm').text == name:
-                        self.Sranklabel.configure(text="순위: " + child.find("rank").text + "위")
-                        self.SopenDtlabel.configure(text="개봉일: " + child.find("openDt").text)
-                        self.SaudiAcclabel.configure(text="누적관객수: " + child.find("audiAcc").text + "명")
-                        self.SsalesAcclabel.configure(text="누적매출액: " + child.find("salesAcc").text + "원")
+                        self.textbox.insert(CURRENT, "제목: " + child.find("movieNm").text + "\n")
+                        self.textbox.insert(CURRENT, "순위: " + child.find("rank").text + "위\n")
+                        self.textbox.insert(CURRENT, "개봉일: " + child.find("openDt").text + "\n")
+                        self.textbox.insert(CURRENT, "누적관객수: " + child.find("audiAcc").text + "명\n")
+                        self.textbox.insert(CURRENT, "누적매출액: " + child.find("salesAcc").text + "원\n")
                         openDt = child.find("openDt").text
                         self.CurrentsalesAcc = child.find("salesAcc").text
                         break
@@ -162,6 +149,8 @@ class Page1():
                         self.Simage.image = movie_image
                         break
             self.Draw_Graph_Button['state'] = 'active'
+            #_page4.textBox.insert(CURRENT,self.textbox.get("1.0","end"))
+
 
     def Draw_Graph(self,name):
         self.salesAccGraph.delete('all')
