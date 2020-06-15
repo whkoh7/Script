@@ -95,12 +95,6 @@ class Set_Parsing:
         for tag in info_tag:
             self.actor_info_tag.append(tag.text)
 
-    def actor_xml_request(self, name):
-        params = {'peopleNm':name}
-        self.response = requests.get(self.actor_movie_url,params=params)
-        self.actor_xml_code = self.response.status_code
-        self.actor_xml_text = self.response.text
-
 
 
 
