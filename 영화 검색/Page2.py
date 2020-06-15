@@ -8,6 +8,10 @@ import webbrowser
 class page2:
     def __init__(self,window):
         self.window = window
+        self.img = PhotoImage(file="resource/BackGround_2.png")
+        self.bg = Label(self.window, image=self.img)
+        self.bg.place(x=0, y=0)
+        self.bg.image = self.img
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
         self.fontstyle2 = font.Font(self.window, size=9, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
@@ -16,8 +20,7 @@ class page2:
         self.textbox = Text(self.window, width=35, height=10, font=self.fontstyle1)
 
     def InitTopText(self):
-        self.Toptext = Label(self.window, font=self.Topfontstyle, text="영화 정보 검색")
-        self.Toptext.pack()
+        pass
 
 
     def InitSearchBox(self):
@@ -31,12 +34,10 @@ class page2:
 
     def InitSearchlabel(self):
         self.MovieimageLabel = Label(self.window, image='')
-        self.MovieimageLabel.place(x=800,y=50)
 
         self.textbox.place(x=800, y=325)
 
         self.MovieLinkLabel = Label(self.window, font=self.fontstyle1, text="",width=15)
-        self.MovieLinkLabel.place(x=1000, y=100)
 
 
         self.NextListButton = Button(self.window, font=self.fontstyle1, text="다음",command = self.Button_next)
@@ -192,8 +193,8 @@ class page2:
                         self.textbox.insert(CURRENT,'\n'+'줄거리: '+MovieSummary)
                     else:
                         pass
-
-
+        self.MovieimageLabel.place(x=800, y=50)
+        self.MovieLinkLabel.place(x=1000, y=100)
         self.MovieLinkLabel.bind('<Button-1>',lambda a:webbrowser.open(movieLink))
 
 

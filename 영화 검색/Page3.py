@@ -10,6 +10,10 @@ import webbrowser
 class page3():
     def __init__(self,window):
         self.window = window
+        self.img = PhotoImage(file="resource/BackGround_3.png")
+        self.bg = Label(self.window, image=self.img)
+        self.bg.place(x=0, y=0)
+        self.bg.image = self.img
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
         self.fontstyle2 = font.Font(self.window, size=9, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
@@ -17,8 +21,7 @@ class page3():
         self.textbox = Text(self.window, font=self.fontstyle1, width=40, height=10)
 
     def InitTopText(self):
-        self.Toptext = Label(self.window, font=self.Topfontstyle, text="배우 정보 검색")
-        self.Toptext.pack()
+        pass
 
     def InitSearchBox(self):
         self.SearchEntryBox = Entry(self.window, font=self.fontstyle1, width=20)
@@ -30,15 +33,12 @@ class page3():
 
     def InitSearchlabel(self):
         self.ActorimageLabel = Label(self.window, font=self.fontstyle1, text="", image='')
-        self.ActorimageLabel.place(x=100, y=150)
         self.textbox.place(x=100,y=325)
         self.Label1 = Label(self.window, font=self.Topfontstyle, text="")
-        self.Label1.place(x=700,y=100)
 
 
     def SearchActor(self):
         self.set_Parsing.actorInfo_HTML_request(self.SearchEntryBox.get())
-        self.set_Parsing.actor_xml_request(self.SearchEntryBox.get())
         movie_list = []
         del movie_list[:]
 
@@ -84,6 +84,9 @@ class page3():
         self.Actor_naver_url = Button(self.window, font=self.fontstyle1, text="네이버에서 검색"\
                                       ,command=lambda a=self.set_Parsing.actorInfo_url:webbrowser.open(a))
         self.Actor_naver_url.place(x=300, y=150)
+
+        self.ActorimageLabel.place(x=100, y=150)
+        self.Label1.place(x=700, y=100)
 
 
 

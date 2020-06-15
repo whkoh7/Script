@@ -9,6 +9,10 @@ from Set_Parsing import *
 class page1():
     def __init__(self,window):
         self.window = window
+        self.img = PhotoImage(file="resource/BackGround_1.png")
+        self.bg = Label(self.window,image=self.img)
+        self.bg.place(x=0,y=0)
+        self.bg.image = self.img
         self.fontstyle1 = font.Font(self.window, size=12, family='Consolas')
         self.fontstyle2 = font.Font(self.window, size=11, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
@@ -21,8 +25,9 @@ class page1():
         self.SearchDateEntryBox = Entry(self.window, font=self.fontstyle1, width=6)
 
     def InitTopText(self):
-        self.Toptext = Label(self.window, font=self.Topfontstyle, text="박스오피스 검색")
-        self.Toptext.pack()
+        self.img = PhotoImage(file = "resource/BackGround_1.png")
+        self.bg_canvas = Canvas(self.window,width=1200,height=599)
+        self.bg_canvas.create_image(0,0,image=self.img,anchor=NW)
 
     def InitSearchListBox(self):
         self.MovieList = [] * 10
@@ -32,15 +37,15 @@ class page1():
                 Button(self.window, font=self.fontstyle2, overrelief="solid", width=28, height=1, bg='white',
                        command=lambda a=i: self.SearchBoxofficeInfo(self.MovieList[a]['text'])))
             self.MovieList[i].place(x=100, y=120 + i * 45)
-            self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + "."))
+            self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + ".", bg = "dark slate gray"))
             self.Rank_Label[i].place(x=60, y=125 + i * 45)
 
     def InitSearchBox(self):
-        self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도: ")
+        self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도:", bg = "dark slate gray")
         self.SearchYearEntryBoxlabel.place(x=305, y=50)
         self.SearchYearEntryBox.place(x=360, y=50)
 
-        self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일: ")
+        self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일:", bg = "dark slate gray")
         self.SearchDateEntryBoxlabel.place(x=425, y=50)
         self.SearchDateEntryBox.place(x=490, y=50)
 
@@ -49,16 +54,15 @@ class page1():
         self.SearchMovieListButton.place(x=560, y=50)
 
         self.RadioVariety = tkinter.IntVar()
-        self.DailySelectionButton = Radiobutton(self.window, value=1, text="일간", variable=self.RadioVariety,
+        self.DailySelectionButton = Radiobutton(self.window, value=1, text="일간", bg = "dark slate gray", variable=self.RadioVariety,
                                                    command=self.ClearList)
         self.DailySelectionButton.place(x=90, y=50)
-        self.WeeklySelectionButton = Radiobutton(self.window, value=2, text="주간", variable=self.RadioVariety,
+        self.WeeklySelectionButton = Radiobutton(self.window, value=2, text="주간", bg = "dark slate gray", variable=self.RadioVariety,
                                                     command=self.ClearList)
         self.WeeklySelectionButton.place(x=150, y=50)
 
     def InitSearchlabel(self):
         self.Simage = Label(self.window, image='')
-        self.Simage.place(x=380, y=100)
 
         self.textbox.place(x=380,y=425)
 
@@ -70,9 +74,7 @@ class page1():
         self.salesAccGraphlabel = []*5
         for i in range(5):
             self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
-            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=340)
         self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
-        self.salesAccGraphlabel[5].place(x=725 , y=215)
         self.Draw_Graph_Button=Button(self.window,font=self.fontstyle1, text="최근 매출액 비교 그래프 출력",command=lambda n=self.temp_name:self.Draw_Graph(self.temp_name))
         self.Draw_Graph_Button.place(x = 860, y = 375)
         self.Draw_Graph_Button['state'] = 'disabled'
@@ -151,6 +153,8 @@ class page1():
             self.Draw_Graph_Button['state'] = 'active'
             #_page4.textBox.insert(CURRENT,self.textbox.get("1.0","end"))
 
+        self.Simage.place(x=380, y=100)
+
 
     def Draw_Graph(self,name):
         self.salesAccGraph.delete('all')
@@ -207,6 +211,7 @@ class page1():
         for i in range(30):
             self.salesAccGraph.create_line(0+(i*10),125,5+(i*10),125)
         for i in range(5):
+            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=340)
             if self.RadioVariety.get() == 1:
                 if i < 2:
                     self.salesAccGraphlabel[i].configure(text=str(2-i)+"일전")
@@ -221,6 +226,7 @@ class page1():
                     self.salesAccGraphlabel[i].configure(text=str(i - 2) + "주후")
                 else:
                     self.salesAccGraphlabel[i].configure(text='기준일')
+        self.salesAccGraphlabel[5].place(x=725, y=215)
 
 
     def Work_page(self):

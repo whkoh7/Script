@@ -9,14 +9,17 @@ key = "gcfrmifmtmpizphi"
 class page4():
     def __init__(self,window):
         self.window = window
+        self.img = PhotoImage(file="resource/BackGround_4.png")
+        self.bg = Label(self.window, image=self.img)
+        self.bg.place(x=0, y=0)
+        self.bg.image = self.img
         self.fontstyle1 = font.Font(self.window, size=10, family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.textbox = Text(self.window,width=35)
 
 
     def InitTopText(self):
-        self.Toptext = Label(self.window, font=self.Topfontstyle, text="메일 보내기")
-        self.Toptext.pack()
+        pass
 
     def InitWidget(self):
         self.textbox.pack(side="left",fill="y")
