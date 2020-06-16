@@ -25,24 +25,33 @@ class page2:
 
     def InitSearchBox(self):
         self.SearchMovieEntryBox = Entry(self.window, font=self.fontstyle1, width=20)
-        self.SearchMovieEntryBox.place(x=250, y=50)
+        self.SearchMovieEntryBox.place(x=275, y=50)
 
-        self.SearchMovieButton = Button(self.window, overrelief='solid', text="검색",
-                                               command=self.SearchMovieList)
-        self.SearchMovieButton.place(x=440, y=50)
+        Button_img = PhotoImage(file="resource/Button_Search.png")
+        self.SearchMovieButton = Button(self.window, overrelief='solid', image=Button_img
+                                               ,bg = "dark slate gray",command=self.SearchMovieList)
+        self.SearchMovieButton.image=Button_img
+        self.SearchMovieButton.place(x=465, y=45)
 
 
     def InitSearchlabel(self):
-        self.MovieimageLabel = Label(self.window, image='')
+        self.MovieimageLabel = Label(self.window, image='',bg = "dark slate gray")
 
         self.textbox.place(x=800, y=325)
 
-        self.MovieLinkLabel = Label(self.window, font=self.fontstyle1, text="",width=15)
+        Label_img = PhotoImage(file="resource/Button_Naver_Info.png")
+        self.MovieLinkLabel = Label(self.window,image=Label_img,bg = "dark slate gray")
+        self.MovieLinkLabel.image = Label_img
 
-
-        self.NextListButton = Button(self.window, font=self.fontstyle1, text="다음",command = self.Button_next)
-        self.NextListButton.place(x=350, y=550)
-        self.PrevListButton = Button(self.window, font=self.fontstyle1, text="이전",command = self.Button_prev)
+        Next_img = PhotoImage(file="resource/Button_Next.png")
+        Prev_img = PhotoImage(file="resource/Button_Prev.png")
+        self.NextListButton = Button(self.window, font=self.fontstyle1,bg = "dark slate gray"\
+                                     , image=Next_img,command = self.Button_next)
+        self.NextListButton.image = Next_img
+        self.NextListButton.place(x=375, y=550)
+        self.PrevListButton = Button(self.window, font=self.fontstyle1,bg = "dark slate gray"\
+                                     , image=Prev_img,command = self.Button_prev)
+        self.PrevListButton.image = Prev_img
         self.PrevListButton.place(x=300, y=550)
         self.PrevListButton['state'] = 'disabled'
         self.NextListButton['state'] = 'disabled'
@@ -81,7 +90,7 @@ class page2:
                     temp = child.find('title').text.replace('<b>','')
                     temp = temp.replace('</b>','')
                     temp = temp.replace('&amp;', '')
-                    self.MovieName.append(Label(self.window,font=self.fontstyle2, text=temp[0:10]))
+                    self.MovieName.append(Label(self.window,font=self.fontstyle2,fg = "white", bg = "dark slate gray", text=temp[0:10]))
                     image_url = child.find('image').text
                     index_num[count] = count
                     if image_url != None:
@@ -90,11 +99,11 @@ class page2:
                         image = Image.open(BytesIO(raw_data))
                         movie_image = ImageTk.PhotoImage(image)
                         self.Movieimage.append(Button(self.window, image=movie_image\
-                                                      ,command=lambda n=index_num[count] :self.SearchMovieInfo(n)))
+                                                      ,bg = "dark slate gray",command=lambda n=index_num[count] :self.SearchMovieInfo(n)))
                         self.Movieimage[count].image = movie_image
                     else:
                         self.Movieimage.append(Button(self.window, image='', text = '이미지 없음' \
-                                                      , command=lambda n=index_num[count]: self.SearchMovieInfo(n)))
+                                                      ,fg = "white", bg = "dark slate gray", command=lambda n=index_num[count]: self.SearchMovieInfo(n)))
                     count += 1
         self.MovieListSet()
         if len(self.MovieName)//10 != 0:
@@ -152,7 +161,7 @@ class page2:
 
     def SearchMovieInfo(self,n):
         self.MovieimageLabel.configure(image='')
-        self.MovieLinkLabel.configure(text='',relief='flat')
+        self.MovieLinkLabel.configure(relief='flat')
         movieLink = ''
         self.textbox.delete("1.0", "end")
         MovieSummary=''
@@ -186,7 +195,7 @@ class page2:
                                                             + actor_list[1] + ', ' + actor_list[2] + '\n')
                     except AttributeError:
                         pass
-                    self.MovieLinkLabel.configure(text='네이버에서'+'\n'+'정보 보기',relief='ridge')
+                    self.MovieLinkLabel.configure(relief='ridge')
                     movieLink = child.find('link').text
                     MovieSummary = self.set_Parsing.Naver_HTML_request(movieLink)
                     if MovieSummary != "네이버 영화 : 영화정보":
@@ -194,7 +203,7 @@ class page2:
                     else:
                         pass
         self.MovieimageLabel.place(x=800, y=50)
-        self.MovieLinkLabel.place(x=1000, y=100)
+        self.MovieLinkLabel.place(x=880, y=525)
         self.MovieLinkLabel.bind('<Button-1>',lambda a:webbrowser.open(movieLink))
 
 

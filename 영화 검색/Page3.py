@@ -27,14 +27,16 @@ class page3():
         self.SearchEntryBox = Entry(self.window, font=self.fontstyle1, width=20)
         self.SearchEntryBox.place(x=250, y=50)
 
-        self.SearchButton = Button(self.window, overrelief='solid', text="검색",
-                                               command=self.SearchActor)
-        self.SearchButton.place(x=440, y=50)
+        Button_img = PhotoImage(file="resource/Button_Search.png")
+        self.SearchButton = Button(self.window, overrelief='solid', image=Button_img,
+                                               command=self.SearchActor,bg = "dark slate gray")
+        self.SearchButton.image = Button_img
+        self.SearchButton.place(x=440, y=45)
 
     def InitSearchlabel(self):
         self.ActorimageLabel = Label(self.window, font=self.fontstyle1, text="", image='')
         self.textbox.place(x=100,y=325)
-        self.Label1 = Label(self.window, font=self.Topfontstyle, text="")
+        self.Label1 = Label(self.window, font=self.Topfontstyle, text="",fg="white", bg = "dark slate gray")
 
 
     def SearchActor(self):
@@ -52,7 +54,7 @@ class page3():
                 raw_data = u.read()
             image = Image.open(BytesIO(raw_data))
             _image = ImageTk.PhotoImage(image)
-            self.ActorimageLabel.configure(image=_image)
+            self.ActorimageLabel.configure(bg = "dark slate gray",image=_image)
             self.ActorimageLabel.image = _image
         else:
             self.ActorimageLabel.configure(text="이미지 없음")
@@ -72,18 +74,20 @@ class page3():
                 image = Image.open(BytesIO(raw_data))
                 image = image.resize((100, 150))
                 _image = ImageTk.PhotoImage(image)
-                self.actor_movie_image.append(Label(self.window, image=_image))
+                self.actor_movie_image.append(Label(self.window, image=_image, bg = "dark slate gray"))
                 self.actor_movie_image[i].image = _image
             else:
-                self.actor_movie_image.append(Label(self.window, text="이미지 없음"))
-            self.actor_movie_name.append(Label(self.window, font=self.fontstyle2,text=self.set_Parsing.movie_name_list[i]))
+                self.actor_movie_image.append(Label(self.window, text="이미지 없음",fg = "white", bg = "dark slate gray"))
+            self.actor_movie_name.append(Label(self.window, font=self.fontstyle2,fg = "white", bg = "dark slate gray",text=self.set_Parsing.movie_name_list[i]))
             self.actor_movie_image[i].place(x=700+i*150,y=150)
             self.actor_movie_name[i].place(x=700 + i * 150, y=310)
         self.Label1.configure(text='출연작')
 
-        self.Actor_naver_url = Button(self.window, font=self.fontstyle1, text="네이버에서 검색"\
+        Button_img = PhotoImage(file="resource/Button_Naver_Search.png")
+        self.Actor_naver_url = Button(self.window, font=self.fontstyle1,bg = "dark slate gray", image=Button_img\
                                       ,command=lambda a=self.set_Parsing.actorInfo_url:webbrowser.open(a))
-        self.Actor_naver_url.place(x=300, y=150)
+        self.Actor_naver_url.place(x=200, y=525)
+        self.Actor_naver_url.image=Button_img
 
         self.ActorimageLabel.place(x=100, y=150)
         self.Label1.place(x=700, y=100)

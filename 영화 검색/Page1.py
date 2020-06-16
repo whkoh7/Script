@@ -34,7 +34,7 @@ class page1():
         self.Rank_Label = [] * 10
         for i in range(10):
             self.MovieList.append(
-                Button(self.window, font=self.fontstyle2, overrelief="solid", width=28, height=1, bg='white',
+                Button(self.window, font=self.fontstyle2, overrelief="solid", width=28, height=1, bg='black',fg="white",
                        command=lambda a=i: self.SearchBoxofficeInfo(self.MovieList[a]['text'])))
             self.MovieList[i].place(x=100, y=120 + i * 45)
             self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + ".", bg = "dark slate gray"))
@@ -42,16 +42,18 @@ class page1():
 
     def InitSearchBox(self):
         self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도:", bg = "dark slate gray")
-        self.SearchYearEntryBoxlabel.place(x=305, y=50)
-        self.SearchYearEntryBox.place(x=360, y=50)
+        self.SearchYearEntryBoxlabel.place(x=225, y=50)
+        self.SearchYearEntryBox.place(x=270, y=50)
 
         self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일:", bg = "dark slate gray")
-        self.SearchDateEntryBoxlabel.place(x=425, y=50)
-        self.SearchDateEntryBox.place(x=490, y=50)
+        self.SearchDateEntryBoxlabel.place(x=345, y=50)
+        self.SearchDateEntryBox.place(x=400, y=50)
 
-        self.SearchMovieListButton = Button(self.window, overrelief='solid', text="일/주간박스오피스 출력",
-                                               command=self.SearchBoxofficeList)
-        self.SearchMovieListButton.place(x=560, y=50)
+        Search_Button_img = PhotoImage(file="resource/Button_Print_Box.png")
+        self.SearchMovieListButton = Button(self.window, overrelief='solid',image=Search_Button_img ,
+                                               command=self.SearchBoxofficeList,bg = "dark slate gray")
+        self.SearchMovieListButton.place(x=500, y=45)
+        self.SearchMovieListButton.image = Search_Button_img
 
         self.RadioVariety = tkinter.IntVar()
         self.DailySelectionButton = Radiobutton(self.window, value=1, text="일간", bg = "dark slate gray", variable=self.RadioVariety,
@@ -62,7 +64,7 @@ class page1():
         self.WeeklySelectionButton.place(x=150, y=50)
 
     def InitSearchlabel(self):
-        self.Simage = Label(self.window, image='')
+        self.Simage = Label(self.window, image='',bg = "dark slate gray")
 
         self.textbox.place(x=380,y=425)
 
@@ -73,10 +75,13 @@ class page1():
         self.salesChange_od = ['0']*4
         self.salesAccGraphlabel = []*5
         for i in range(5):
-            self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
-        self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1, text=""))
-        self.Draw_Graph_Button=Button(self.window,font=self.fontstyle1, text="최근 매출액 비교 그래프 출력",command=lambda n=self.temp_name:self.Draw_Graph(self.temp_name))
-        self.Draw_Graph_Button.place(x = 860, y = 375)
+            self.salesAccGraphlabel.append(Label(self.window, font=self.fontstyle1,bg = "dark slate gray",fg="white", text=""))
+
+        Graph_Button_img = PhotoImage(file="resource/Button_Graph.png")
+        self.Draw_Graph_Button=Button(self.window,font=self.fontstyle1,image =Graph_Button_img,bg = "dark slate gray",\
+                                      command=lambda n=self.temp_name:self.Draw_Graph(self.temp_name))
+        self.Draw_Graph_Button.image = Graph_Button_img
+        self.Draw_Graph_Button.place(x=824, y=375)
         self.Draw_Graph_Button['state'] = 'disabled'
 
     def ClearList(self):
@@ -211,7 +216,7 @@ class page1():
         for i in range(30):
             self.salesAccGraph.create_line(0+(i*10),125,5+(i*10),125)
         for i in range(5):
-            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=340)
+            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=350)
             if self.RadioVariety.get() == 1:
                 if i < 2:
                     self.salesAccGraphlabel[i].configure(text=str(2-i)+"일전")
@@ -226,7 +231,6 @@ class page1():
                     self.salesAccGraphlabel[i].configure(text=str(i - 2) + "주후")
                 else:
                     self.salesAccGraphlabel[i].configure(text='기준일')
-        self.salesAccGraphlabel[5].place(x=725, y=215)
 
 
     def Work_page(self):

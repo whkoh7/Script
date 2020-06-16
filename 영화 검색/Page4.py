@@ -28,10 +28,12 @@ class page4():
         self.scrollbar["command"]=self.textbox.yview
         self.scrollbar.pack(side="left",fill="y")
 
+        Button_img = PhotoImage(file="resource/Button_Mail.png")
         self.EmailEntry = Entry(self.window, font=self.fontstyle1, width=30)
-        self.EmailEntry.place(x=300, y=50)
-        self.sendbutton = Button(self.window, text="메일 보내기", command=self.SendMail)
-        self.sendbutton.place(x=440, y=70)
+        self.EmailEntry.place(x=300, y=125)
+        self.sendbutton = Button(self.window,bg = "dark slate gray", image=Button_img, command=self.SendMail)
+        self.sendbutton.image = Button_img
+        self.sendbutton.place(x=335, y=150)
 
     def SendMail(self):
         self.s = smtplib.SMTP('smtp.gmail.com', 587)

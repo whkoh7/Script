@@ -28,15 +28,16 @@ notebook.add(P4, text="메일")
 _page4 = Page4.page4(P4)
 
 # 메일로 보낼 내용 page4에 보내는 벤자민 버튼
-gettext_button1 = Button(P1,text='저장',command=lambda n=_page1.textbox.get("1.0","end"):\
+button_img = PhotoImage(file = "resource/Button_Save.png")
+gettext_button1 = Button(P1,image=button_img,bg = "dark slate gray",command=lambda n=_page1.textbox.get("1.0","end"):\
                      _page4.textbox.insert(CURRENT,"---------------------------------\n"\
                                            +_page1.SearchYearEntryBox.get()+_page1.SearchDateEntryBox.get()+"\n"\
                                            +_page1.textbox.get("1.0","end")))
-gettext_button1.place(x=380,y=575)
-gettext_button2 = Button(P2,text='저장',command=lambda n=_page2.textbox.get("1.0","end"):\
+gettext_button1.place(x=750,y=545)
+gettext_button2 = Button(P2,image=button_img,bg = "dark slate gray",command=lambda n=_page2.textbox.get("1.0","end"):\
                      _page4.textbox.insert(CURRENT,"---------------------------------\n"+_page2.textbox.get("1.0","end")))
 gettext_button2.place(x=800,y=525)
-gettext_button3 = Button(P3,text='저장',command=lambda n=_page3.textbox.get("1.0","end"):\
+gettext_button3 = Button(P3,image=button_img,bg = "dark slate gray",command=lambda n=_page3.textbox.get("1.0","end"):\
                      _page4.textbox.insert(CURRENT,"---------------------------------\n"+_page3.textbox.get("1.0","end")))
 gettext_button3.place(x=100,y=525)
 
