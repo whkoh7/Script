@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import font
+from tkinter.scrolledtext import *
 from io import BytesIO
 from PIL import Image, ImageTk
 from Set_Parsing import *
@@ -17,7 +18,7 @@ class page2:
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.movieListPage = 0
         self.set_Parsing = Set_Parsing()
-        self.textbox = Text(self.window, width=35, height=10, font=self.fontstyle1)
+        self.textbox = ScrolledText(self.window, width=35, height=10, font=self.fontstyle1)
 
     def InitTopText(self):
         pass
@@ -185,16 +186,17 @@ class page2:
                     temp2 = temp2.replace('&amp;', '')
                     self.textbox.insert(CURRENT,temp2+'\n\n')
                     self.textbox.insert(CURRENT,'제작 연도: ' + child.find('pubDate').text+'\n')
-                    self.textbox.insert(CURRENT,'평점: ' + child.find('userRating').text+'\n')
-                    self.textbox.insert(CURRENT,'감독: ' + child.find('director').text.replace('|', ' ')+'\n')
-                    try:
-                        actor_list = temp1.split('|')
-                        actor_list.append(' ')
-                        actor_list.append(' ')
-                        self.textbox.insert(CURRENT,'출연 배우: ' + actor_list[0] + ', ' \
-                                                            + actor_list[1] + ', ' + actor_list[2] + '\n')
-                    except AttributeError:
-                        pass
+                    self.textbox.insert(CURRENT,'평점: ' + child.find('userRating').text+'\n'+'\n')
+                    self.textbox.insert(CURRENT,'감독: ' + child.find('director').text.replace('|', ' ')+'\n'+'\n')
+                    self.textbox.insert(CURRENT, '출연 배우: ' + child.find('actor').text+ '\n')
+                    #try:
+                    #    actor_list = temp1.split('|')
+                    #    actor_list.append(' ')
+                    #    actor_list.append(' ')
+                    #    self.textbox.insert(CURRENT,'출연 배우: ' + actor_list[0] + ', ' \
+                    #                                        + actor_list[1] + ', ' + actor_list[2] + '\n')
+                    #except AttributeError:
+                    #    pass
                     self.MovieLinkLabel.configure(relief='ridge')
                     movieLink = child.find('link').text
                     MovieSummary = self.set_Parsing.Naver_HTML_request(movieLink)

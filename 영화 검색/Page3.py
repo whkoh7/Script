@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import font
+from tkinter.scrolledtext import *
 import tkinter.ttk
 from io import BytesIO
 from PIL import Image, ImageTk
@@ -18,7 +19,7 @@ class page3():
         self.fontstyle2 = font.Font(self.window, size=9, weight='bold', family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
         self.set_Parsing = Set_Parsing()
-        self.textbox = Text(self.window, font=self.fontstyle1, width=40, height=10)
+        self.textbox = ScrolledText(self.window, font=self.fontstyle1, width=40, height=10)
 
     def InitTopText(self):
         pass
@@ -47,7 +48,7 @@ class page3():
         self.textbox.insert(CURRENT,self.set_Parsing.actor_info[0]+'\n\n')
         for i in range(1,5):
             self.textbox.insert(CURRENT,self.set_Parsing.actor_info_tag[i-1]\
-                                                 +": "+self.set_Parsing.actor_info[i]+'\n')
+                                                 +": "+self.set_Parsing.actor_info[i]+'\n'+'\n')
 
         if self.set_Parsing.actor_image_url != None:
             with urllib.request.urlopen(self.set_Parsing.actor_image_url) as u:

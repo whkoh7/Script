@@ -2,6 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from tkinter import *
 from tkinter import font
+from tkinter.scrolledtext import *
 
 my_email = "anis15740@gmail.com"
 key = "gcfrmifmtmpizphi"
@@ -15,18 +16,14 @@ class page4():
         self.bg.image = self.img
         self.fontstyle1 = font.Font(self.window, size=10, family='Consolas')
         self.Topfontstyle = font.Font(self.window, size=18, weight='bold', family='Consolas')
-        self.textbox = Text(self.window,width=35)
+        self.textbox = ScrolledText(self.window,width=35,height=30)
 
 
     def InitTopText(self):
         pass
 
     def InitWidget(self):
-        self.textbox.pack(side="left",fill="y")
-        self.scrollbar = Scrollbar(self.window)
-        self.textbox.configure(yscrollcommand=self.scrollbar.set)
-        self.scrollbar["command"]=self.textbox.yview
-        self.scrollbar.pack(side="left",fill="y")
+        self.textbox.place(x=25,y=125)
 
         Button_img = PhotoImage(file="resource/Button_Mail.png")
         self.EmailEntry = Entry(self.window, font=self.fontstyle1, width=30)
