@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image, ImageTk
 from Set_Parsing import *
 import webbrowser
+import spam
 
 class page2:
     def __init__(self,window):
@@ -180,28 +181,27 @@ class page2:
                         movie_image = ImageTk.PhotoImage(image)
                         self.MovieimageLabel.configure(image=movie_image)
                         self.MovieimageLabel.image = movie_image
-                    temp1 = child.find('actor').text
                     temp2 = child.find('title').text.replace('<b>', '')
                     temp2 = temp2.replace('</b>', '')
                     temp2 = temp2.replace('&amp;', '')
+                    try:
+                        actor_list = '출연 배우: ' + spam.strchange(child.find('actor').text)
+                    except:
+                        actor_list=""
+                    try:
+                        director_list = '감독: ' +spam.strchange(child.find('director').text)
+                    except:
+                        director_list=""
                     self.textbox.insert(CURRENT,temp2+'\n\n')
                     self.textbox.insert(CURRENT,'제작 연도: ' + child.find('pubDate').text+'\n')
                     self.textbox.insert(CURRENT,'평점: ' + child.find('userRating').text+'\n'+'\n')
-                    self.textbox.insert(CURRENT,'감독: ' + child.find('director').text.replace('|', ' ')+'\n'+'\n')
-                    self.textbox.insert(CURRENT, '출연 배우: ' + child.find('actor').text+ '\n')
-                    #try:
-                    #    actor_list = temp1.split('|')
-                    #    actor_list.append(' ')
-                    #    actor_list.append(' ')
-                    #    self.textbox.insert(CURRENT,'출연 배우: ' + actor_list[0] + ', ' \
-                    #                                        + actor_list[1] + ', ' + actor_list[2] + '\n')
-                    #except AttributeError:
-                    #    pass
+                    self.textbox.insert(CURRENT,director_list+'\n'+'\n')
+                    self.textbox.insert(CURRENT,actor_list+'\n'+'\n')
                     self.MovieLinkLabel.configure(relief='ridge')
                     movieLink = child.find('link').text
                     MovieSummary = self.set_Parsing.Naver_HTML_request(movieLink)
                     if MovieSummary != "네이버 영화 : 영화정보":
-                        self.textbox.insert(CURRENT,'\n'+'줄거리: '+MovieSummary)
+                        self.textbox.insert(CURRENT, '줄거리: '+MovieSummary)
                     else:
                         pass
         self.MovieimageLabel.place(x=800, y=50)
