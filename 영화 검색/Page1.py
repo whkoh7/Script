@@ -37,15 +37,15 @@ class page1():
                 Button(self.window, font=self.fontstyle2, overrelief="solid", width=28, height=1, bg='black',fg="white",
                        command=lambda a=i: self.SearchBoxofficeInfo(self.MovieList[a]['text'])))
             self.MovieList[i].place(x=100, y=120 + i * 45)
-            self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + ".", bg = "dark slate gray"))
+            self.Rank_Label.append(Label(self.window, font=self.fontstyle2, text=str(i + 1) + ".", bg = "dark slate gray",fg="white"))
             self.Rank_Label[i].place(x=60, y=125 + i * 45)
 
     def InitSearchBox(self):
-        self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도:", bg = "dark slate gray")
+        self.SearchYearEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="년도:", bg = "dark slate gray",fg="white")
         self.SearchYearEntryBoxlabel.place(x=225, y=50)
         self.SearchYearEntryBox.place(x=270, y=50)
 
-        self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일:", bg = "dark slate gray")
+        self.SearchDateEntryBoxlabel = Label(self.window, font=self.fontstyle1, text="월/일:", bg = "dark slate gray",fg="white")
         self.SearchDateEntryBoxlabel.place(x=345, y=50)
         self.SearchDateEntryBox.place(x=400, y=50)
 
@@ -56,10 +56,10 @@ class page1():
         self.SearchMovieListButton.image = Search_Button_img
 
         self.RadioVariety = tkinter.IntVar()
-        self.DailySelectionButton = Radiobutton(self.window, value=1, text="일간", bg = "dark slate gray", variable=self.RadioVariety,
+        self.DailySelectionButton = Radiobutton(self.window, value=1, text="일간",fg="white", bg = "dark slate gray",selectcolor="black", variable=self.RadioVariety,
                                                    command=self.ClearList)
         self.DailySelectionButton.place(x=90, y=50)
-        self.WeeklySelectionButton = Radiobutton(self.window, value=2, text="주간", bg = "dark slate gray", variable=self.RadioVariety,
+        self.WeeklySelectionButton = Radiobutton(self.window, value=2, text="주간",fg="white", bg = "dark slate gray",selectcolor="black", variable=self.RadioVariety,
                                                     command=self.ClearList)
         self.WeeklySelectionButton.place(x=150, y=50)
 
@@ -216,7 +216,7 @@ class page1():
         for i in range(30):
             self.salesAccGraph.create_line(0+(i*10),125,5+(i*10),125)
         for i in range(5):
-            self.salesAccGraphlabel[i].place(x=820 + (i * 70), y=350)
+            self.salesAccGraphlabel[i].place(x=810 + (i * 70), y=350)
             if self.RadioVariety.get() == 1:
                 if i < 2:
                     self.salesAccGraphlabel[i].configure(text=str(2-i)+"일전")

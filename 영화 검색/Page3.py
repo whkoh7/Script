@@ -26,13 +26,13 @@ class page3():
 
     def InitSearchBox(self):
         self.SearchEntryBox = Entry(self.window, font=self.fontstyle1, width=20)
-        self.SearchEntryBox.place(x=250, y=50)
+        self.SearchEntryBox.place(x=450, y=50)
 
         Button_img = PhotoImage(file="resource/Button_Search.png")
         self.SearchButton = Button(self.window, overrelief='solid', image=Button_img,
                                                command=self.SearchActor,bg = "dark slate gray")
         self.SearchButton.image = Button_img
-        self.SearchButton.place(x=440, y=45)
+        self.SearchButton.place(x=640, y=45)
 
     def InitSearchlabel(self):
         self.ActorimageLabel = Label(self.window, font=self.fontstyle1, text="", image='')
