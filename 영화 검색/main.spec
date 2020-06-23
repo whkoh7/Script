@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['검색\\main.py'],
-             pathex=['C:\\Users\\whkoh\\Desktop\\2020_1_Semester\\스언어\\term_project\\Script\\영화', 'C:\\Users\\whkoh\\Desktop\\2020_1_Semester\\스언어\\term_project\\Script\\영화 검색'],
+a = Analysis(['main.py'],
+             pathex=['C:\\Users\\whkoh\\Desktop\\2020_1_Semester\\스언어\\term_project\\Script\\영화 검색'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -19,19 +19,15 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
           [],
-          exclude_binaries=True,
           name='main',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
-coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               upx_exclude=[],
-               name='main')
+          upx_exclude=[],
+          runtime_tmpdir=None,
+          console=False )
