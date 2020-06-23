@@ -21,10 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c669e1b3-2d94-4091-bf49-5f17dcadc633" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Page1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Page1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Page2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Page2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Page3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Page3.py" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +54,18 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\공부자료\스언어\팀프로젝트\Script" />
     </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager" selected="Python.main (1)">
     <configuration name="Page1" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -169,12 +179,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="113" y="198" key="#Inspections" timestamp="1591513298480">
