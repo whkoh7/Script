@@ -45,6 +45,7 @@ class page3():
         movie_list = []
         del movie_list[:]
 
+        self.textbox.delete("1.0","end")
         self.textbox.insert(CURRENT,self.set_Parsing.actor_info[0]+'\n\n')
         for i in range(1,5):
             self.textbox.insert(CURRENT,self.set_Parsing.actor_info_tag[i-1]\
@@ -61,16 +62,16 @@ class page3():
             self.ActorimageLabel.configure(text="이미지 없음")
 
         #출연 영화 목록
-        self.actor_movie_image = []
-        self.actor_movie_name = []
         try:
-            for i in range(3):
+            for i in range(len(self.actor_movie_name)):
                 self.actor_movie_image[i].destroy()
                 self.actor_movie_name[i].destroy()
             del self.actor_movie_image[:]
             del self.actor_movie_name[:]
-        except IndexError:
+        except AttributeError:
             pass
+        self.actor_movie_image = []
+        self.actor_movie_name = []
         for i in range(len(self.set_Parsing.movie_img_list)):
             if self.set_Parsing.actor_image_url != None:
                 with urllib.request.urlopen(self.set_Parsing.movie_img_list[i]) as u:
